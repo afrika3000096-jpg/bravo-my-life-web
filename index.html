@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#D4820A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="나의 인생스토리">
+<title>나의 인생스토리</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --amber:#D4820A;--amber-light:#FDF3E0;
+  --ink:#2A1F0E;--ink2:#5C4A2A;--ink3:#8C7355;
+  --cream:#FFFDF5;--cream2:#FEF9EC;--page:#FAF3E0;
+  --green:#2D7D4F;--green-bg:#EAF5EF;
+  --shadow:0 2px 12px rgba(42,31,14,0.10);
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--page);font-family:'Noto Sans KR',sans-serif;color:var(--ink);display:flex;flex-direction:column;}
+.serif{font-family:'Nanum Myeongjo',serif;}
+::-webkit-scrollbar{display:none;}
+
+/* AUTH */
+.auth-wrap{
+  position:fixed;inset:0;background:linear-gradient(160deg,#FFF7E6,#FDE68A);
+  z-index:999;display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.auth-card{
+  width:100%;max-width:360px;background:#FFFDF5;border-radius:22px;
+  padding:26px 22px;box-shadow:0 8px 30px rgba(42,31,14,.18);
+  border:1px solid #EDD9A3;text-align:center;
+}
+.auth-title{font-family:'Nanum Myeongjo',serif;font-size:28px;font-weight:800;color:#78350F;}
+.auth-sub{font-size:13px;color:#92400E;margin:8px 0 20px;line-height:1.6;}
+.auth-input{
+  width:100%;border:1.5px solid #DDD0A8;border-radius:12px;
+  padding:13px;margin-bottom:10px;font-size:14px;background:#FEF9EC;
+  outline:none;font-family:'Noto Sans KR',sans-serif;
+}
+.auth-input:focus{border-color:var(--amber);}
+.auth-btn{
+  width:100%;border:none;border-radius:12px;padding:13px;margin-top:6px;
+  background:#D4820A;color:white;font-weight:700;font-size:15px;
+  cursor:pointer;font-family:'Noto Sans KR',sans-serif;
+}
+.auth-btn:active{opacity:.85;}
+.auth-link{margin-top:12px;font-size:13px;color:#8C7355;}
+
+/* NAV */
+.nav{display:flex;border-bottom:1.5px solid #E8D9B0;background:var(--cream);flex-shrink:0;z-index:50;}
+.nav-btn{flex:1;padding:12px 4px 10px;border:none;background:none;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;color:var(--ink3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.15s;}
+.nav-btn.active{color:var(--amber);border-bottom:2.5px solid var(--amber);}
+.nav-btn i{font-size:18px;}
+
+/* SCREENS */
+.screen{display:none;flex:1;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom);}
+.screen.active{display:block;}
+
+/* HOME */
+.home-hero{background:linear-gradient(160deg,#FEF3C7,#FDE68A 60%,#FCD34D);padding:28px 20px 20px;}
+.hero-sub{font-size:11px;font-weight:500;color:#92400E;letter-spacing:.1em;margin-bottom:6px;}
+.hero-title{font-family:'Nanum Myeongjo',serif;font-size:28px;font-weight:800;color:#78350F;line-height:1.3;margin-bottom:8px;}
+.hero-desc{font-size:13px;color:#92400E;line-height:1.6;}
+.user-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.5);border-radius:99px;padding:4px 12px;font-size:11px;color:#78350F;margin-top:8px;}
+.progress-card{margin:16px 16px 0;background:var(--cream);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);border:1px solid #EDD9A3;}
+.prog-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-label span{font-size:12px;color:var(--ink2);}
+.prog-label b{font-size:13px;color:var(--amber);}
+.prog-bg{background:#EDD9A3;border-radius:99px;height:8px;overflow:hidden;}
+.prog-fill{background:linear-gradient(90deg,var(--amber),#F59E0B);height:8px;border-radius:99px;transition:.5s;}
+.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 0;}
+.action-card{background:var(--cream);border-radius:14px;padding:16px 14px;box-shadow:var(--shadow);border:1px solid #EDD9A3;cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:.12s;}
+.action-card:active{transform:scale(.97);}
+.action-card i{font-size:22px;color:var(--amber);}
+.action-card span{font-size:13px;font-weight:500;color:var(--ink);}
+.action-card small{font-size:11px;color:var(--ink3);}
+.section-hd{font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:var(--ink);padding:20px 16px 10px;display:flex;align-items:center;gap:8px;}
+.section-hd i{color:var(--amber);}
+.chips-row{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto;}
+.chip{flex-shrink:0;background:var(--cream);border:1px solid #EDD9A3;border-radius:99px;padding:6px 14px;font-size:12px;color:var(--ink2);}
+.chip.done{background:var(--green-bg);border-color:#A7D9BE;color:var(--green);text-decoration:line-through;}
+
+/* WRITE */
+.q-hdr{background:var(--amber-light);padding:16px;border-bottom:1px solid #EDD9A3;}
+.q-pill{display:inline-block;background:var(--amber);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;margin-bottom:8px;}
+.q-text{font-family:'Nanum Myeongjo',serif;font-size:17px;font-weight:700;color:var(--ink);line-height:1.5;}
+.q-body{padding:14px 16px;}
+textarea.ans{width:100%;border:1.5px solid #DDD0A8;border-radius:12px;padding:14px;font-size:14px;font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:var(--cream2);resize:none;line-height:1.8;outline:none;transition:.2s;}
+textarea.ans:focus{border-color:var(--amber);background:#fff;}
+.char-hint{text-align:right;font-size:11px;color:var(--ink3);margin-top:4px;}
+.save-hint{text-align:right;font-size:11px;color:var(--green);margin-top:2px;min-height:16px;}
+.ai-box{margin-top:12px;background:#FFFBEB;border:1px solid #E8D9A3;border-radius:12px;padding:14px;}
+.ai-lbl{font-size:11px;font-weight:700;color:var(--amber);margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.ai-out{font-size:13px;color:var(--ink2);line-height:1.7;min-height:36px;}
+.ai-btn{margin-top:10px;background:var(--amber);color:#fff;border:none;border-radius:99px;padding:8px 18px;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.ai-btn:disabled{opacity:.5;}
+.nav-btns{display:flex;gap:10px;padding:12px 16px 0;}
+.btn-p,.btn-n{flex:1;padding:12px;border-radius:12px;font-size:14px;font-family:'Noto Sans KR',sans-serif;font-weight:500;cursor:pointer;border:none;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-p{background:var(--cream);border:1.5px solid #DDD0A8;color:var(--ink2);}
+.btn-n{background:var(--amber);color:#fff;}
+.btn-p:disabled{opacity:.4;}
+.btn-p:active,.btn-n:active{transform:scale(.97);}
+.dots{display:flex;justify-content:center;gap:6px;padding:10px 0 16px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#DDD0A8;transition:.3s;}
+.dot.active{background:var(--amber);width:18px;border-radius:99px;}
+.dot.done{background:#A7D9BE;}
+
+/* BOOK */
+.book-hdr{background:var(--amber-light);padding:16px;border-bottom:1px solid #EDD9A3;display:flex;align-items:center;justify-content:space-between;}
+.book-entry{margin:12px 16px 0;background:var(--cream);border-radius:14px;padding:16px;box-shadow:var(--shadow);border:1px solid #EDD9A3;}
+.book-entry:last-child{margin-bottom:12px;}
+.book-q{font-size:11px;font-weight:700;color:var(--amber);margin-bottom:6px;}
+.book-a{font-family:'Nanum Myeongjo',serif;font-size:14px;color:var(--ink);line-height:1.9;white-space:pre-wrap;}
+.book-empty{font-size:12px;color:var(--ink3);font-style:italic;}
+.exp-btn{background:var(--amber);color:#fff;border:none;padding:8px 16px;border-radius:99px;font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px;}
+
+/* BUCKET */
+.bkt-hdr{background:var(--amber-light);padding:16px;border-bottom:1px solid #EDD9A3;display:flex;align-items:center;justify-content:space-between;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 16px;}
+.stat{background:var(--cream);border:1px solid #EDD9A3;border-radius:12px;padding:10px 8px;text-align:center;}
+.stat-n{font-size:22px;font-weight:700;font-family:'Nanum Myeongjo',serif;color:var(--amber);}
+.stat-l{font-size:10px;color:var(--ink3);margin-top:2px;}
+.bkt-add{display:flex;gap:8px;padding:0 16px 8px;}
+.bkt-inp{flex:1;border:1.5px solid #DDD0A8;border-radius:10px;padding:10px 12px;font-size:14px;font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:var(--cream2);outline:none;}
+.bkt-inp:focus{border-color:var(--amber);}
+.add-btn{background:var(--amber);color:#fff;border:none;border-radius:10px;width:44px;font-size:20px;cursor:pointer;}
+.bkt-item{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--cream);margin:0 16px 8px;border-radius:12px;border:1px solid #EDD9A3;cursor:pointer;transition:.15s;}
+.bkt-item:active{transform:scale(.98);}
+.bkt-chk{width:22px;height:22px;border-radius:50%;border:2px solid #DDD0A8;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.bkt-item.done .bkt-chk{background:var(--green);border-color:var(--green);color:#fff;font-size:12px;}
+.bkt-item.done .bkt-lbl{text-decoration:line-through;color:var(--ink3);}
+.bkt-lbl{font-size:14px;flex:1;color:var(--ink);}
+.del-btn{background:none;border:none;color:#C4A97A;cursor:pointer;padding:2px 6px;font-size:15px;}
+
+/* LOGOUT */
+.logout-row{padding:16px;text-align:center;}
+.logout-btn{background:none;border:1px solid #DDD0A8;border-radius:99px;padding:8px 20px;font-size:12px;color:var(--ink3);cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+@keyframes dots{0%{content:''}33%{content:'.'}66%{content:'..'}100%{content:'...'}}
+.ldots::after{content:'';animation:dots 1s infinite;}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div class="auth-wrap" id="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-title">브라보 마이 라이프</div>
+    <div class="auth-sub">당신의 소중한 이야기를 기록하세요</div>
+    <input class="auth-input" id="auth-email" type="email" placeholder="이메일">
+    <input class="auth-input" id="auth-password" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="auth-btn" onclick="doLogin()">로그인</button>
+    <button class="auth-btn" style="background:#2D7D4F;margin-top:8px;" onclick="doRegister()">회원가입</button>
+    <div class="auth-link" style="margin-top:14px;font-size:12px;">이메일과 비밀번호를 입력 후 회원가입 또는 로그인하세요.</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="show('home')" id="nav-home"><i class="fa-solid fa-house"></i>홈</button>
+  <button class="nav-btn" onclick="show('write')" id="nav-write"><i class="fa-solid fa-pen-nib"></i>자서전</button>
+  <button class="nav-btn" onclick="show('book')" id="nav-book"><i class="fa-solid fa-book-open"></i>모아보기</button>
+  <button class="nav-btn" onclick="show('bucket')" id="nav-bucket"><i class="fa-solid fa-star"></i>버킷리스트</button>
+</nav>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="home-hero">
+    <p class="hero-sub">Bravo My Life</p>
+    <h1 class="hero-title serif">브라보 마이 라이프</h1>
+    <p class="hero-desc">당신의 소중한 이야기를 기록하세요.<br>추억과 꿈을 아름답게 남겨보세요.</p>
+    <div class="user-badge" id="user-badge" style="display:none;"><i class="fa-solid fa-user"></i><span id="user-email-txt"></span></div>
+  </div>
+  <div class="progress-card">
+    <div class="prog-label"><span>자서전 완성도</span><b id="h-ptxt">0% (0/10)</b></div>
+    <div class="prog-bg"><div class="prog-fill" id="h-pbar" style="width:0%"></div></div>
+  </div>
+  <div class="home-actions">
+    <div class="action-card" onclick="show('write')"><i class="fa-solid fa-pen-nib"></i><span>자서전 쓰기</span><small>AI가 도와드려요</small></div>
+    <div class="action-card" onclick="show('bucket')"><i class="fa-solid fa-star"></i><span>버킷리스트</span><small>꿈을 기록하세요</small></div>
+    <div class="action-card" onclick="show('book')"><i class="fa-solid fa-book-open"></i><span>자서전 보기</span><small>완성된 이야기</small></div>
+    <div class="action-card" onclick="exportAll()"><i class="fa-solid fa-file-arrow-down"></i><span>내보내기</span><small>텍스트 파일로</small></div>
+  </div>
+  <div class="section-hd serif"><i class="fa-solid fa-star"></i>버킷리스트 현황</div>
+  <div class="chips-row" id="home-chips"></div>
+  <div class="logout-row"><button class="logout-btn" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> 로그아웃</button></div>
+</div>
+
+<!-- WRITE -->
+<div class="screen" id="screen-write">
+  <div class="q-hdr">
+    <span class="q-pill" id="q-num">질문 1 / 10</span>
+    <p class="q-text serif" id="q-text"></p>
+  </div>
+  <div class="q-body">
+    <textarea class="ans" id="answer" rows="7" placeholder="편하게 말씀하시듯 적어 주세요. 자동 저장됩니다."></textarea>
+    <div class="char-hint"><span id="char-n">0</span>자 · 자동 저장</div>
+    <div class="save-hint" id="save-hint"></div>
+    <div class="ai-box">
+      <div class="ai-lbl"><i class="fa-solid fa-wand-magic-sparkles"></i>AI 문장 다듬기</div>
+      <div class="ai-out" id="ai-out">답변을 쓴 후 아래 버튼을 눌러보세요.</div>
+      <button class="ai-btn" id="ai-btn" onclick="callAI()"><i class="fa-solid fa-wand-magic-sparkles"></i>AI로 문장 다듬기</button>
+    </div>
+  </div>
+  <div class="nav-btns">
+    <button class="btn-p" id="btn-p" onclick="goQ(-1)"><i class="fa-solid fa-chevron-left"></i>이전</button>
+    <button class="btn-n" id="btn-n" onclick="goQ(1)">다음<i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<!-- BOOK -->
+<div class="screen" id="screen-book">
+  <div class="book-hdr">
+    <span class="serif" style="font-size:17px;font-weight:700;color:#2A1F0E;">브라보 마이 라이프</span>
+    <button class="exp-btn" onclick="exportAll()"><i class="fa-solid fa-file-arrow-down"></i>내보내기</button>
+  </div>
+  <div id="book-entries"></div>
+</div>
+
+<!-- BUCKET -->
+<div class="screen" id="screen-bucket">
+  <div class="bkt-hdr">
+    <span class="serif" style="font-size:17px;font-weight:700;color:#2A1F0E;">버킷리스트</span>
+    <span style="font-size:12px;color:var(--ink3);" id="bkt-prog"></span>
+  </div>
+  <div class="stats" id="bkt-stats"></div>
+  <div class="bkt-add">
+    <input class="bkt-inp" id="bkt-inp" placeholder="새 버킷리스트 추가..." onkeydown="if(event.key==='Enter')addBkt()">
+    <button class="add-btn" onclick="addBkt()"><i class="fa-solid fa-plus"></i></button>
+  </div>
+  <div id="bkt-list"></div>
+</div>
+
+<script>
+const API_URL = "https://bravo-my-life-server.onrender.com";
+
+const QS = [
+  "가장 기억에 남는 어린 시절의 기억은 무엇인가요?",
+  "학창 시절 가장 즐거웠던 일이나 친구는 누구였나요?",
+  "첫 직장이나 첫 월급을 탔을 때의 기분은 어땠나요?",
+  "인생의 반려자를 만나 결혼을 결심하게 된 순간은 언제였나요?",
+  "아이를 처음 품에 안았을 때 어떤 생각이 드셨나요?",
+  "살면서 가장 힘들었던 시기와 어떻게 극복하셨나요?",
+  "나에게 가장 큰 영향을 준 사람이나 고마운 사람은 누구인가요?",
+  "지금까지 가장 자랑스러웠던 성취는 무엇인가요?",
+  "남은 인생 동안 꼭 이루고 싶은 버킷리스트가 있나요?",
+  "사랑하는 가족들에게 꼭 남기고 싶은 한마디는?"
+];
+
+const DEF_BKTS = [
+  {id:1,text:"손자녀와 함께 여행 떠나기",done:false},
+  {id:2,text:"자서전 완성하기",done:false},
+  {id:3,text:"악기 하나 배우기",done:false}
+];
+
+let curQ = 0, bkts = [], nid = 100;
+const m = {};
+
+// ── localStorage 헬퍼 ──
+function ls(k, v) {
+  try {
+    if (v === undefined) return JSON.parse(localStorage.getItem(k));
+    localStorage.setItem(k, JSON.stringify(v));
+  } catch(e) {
+    if (v === undefined) return m[k];
+    m[k] = v;
+  }
+}
+
+// ── 서버 저장 (2초 디바운스) ──
+async function saveToServer() {
+  const email = localStorage.getItem("bravo_user");
+  if (!email) return;
+  const answers = {};
+  QS.forEach((_, i) => { answers['a' + i] = ls('a' + i) || ''; });
+  try {
+    await fetch(API_URL + "/save", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ email, answers, buckets: bkts })
+    });
+    showSaveHint("☁️ 저장됨");
+  } catch(e) {
+    showSaveHint("⚠️ 저장 실패");
+  }
+}
+
+let _saveTimer = null;
+function scheduleSave() {
+  clearTimeout(_saveTimer);
+  showSaveHint("저장 중...");
+  _saveTimer = setTimeout(saveToServer, 2000);
+}
+
+function showSaveHint(msg) {
+  const el = document.getElementById('save-hint');
+  if (!el) return;
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
+// ── 회원가입 ──
+async function doRegister() {
+  const email = document.getElementById("auth-email").value.trim();
+  const password = document.getElementById("auth-password").value.trim();
+  if (!email || !password) { alert("이메일과 비밀번호를 입력하세요."); return; }
+  try {
+    const res = await fetch(API_URL + "/register", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    alert(data.message || "완료");
+    if (data.success) {
+      // 가입 후 바로 로그인
+      await doLogin();
+    }
+  } catch(e) {
+    alert("서버 연결 실패");
+  }
+}
+
+// ── 로그인 ──
+async function doLogin() {
+  const email = document.getElementById("auth-email").value.trim();
+  const password = document.getElementById("auth-password").value.trim();
+  if (!email || !password) { alert("이메일과 비밀번호를 입력하세요."); return; }
+  try {
+    const res = await fetch(API_URL + "/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem("bravo_user", email);
+      // 서버 데이터 로컬에 반영
+      if (data.answers && typeof data.answers === 'object') {
+        Object.keys(data.answers).forEach(k => ls(k, data.answers[k]));
+      }
+      if (data.buckets && Array.isArray(data.buckets) && data.buckets.length > 0) {
+        ls('bkts', data.buckets);
+        const maxId = Math.max(...data.buckets.map(b => b.id || 0));
+        ls('nid', maxId + 1);
+      }
+      document.getElementById("auth-wrap").style.display = "none";
+      init();
+    } else {
+      alert(data.message || "로그인 실패");
+    }
+  } catch(e) {
+    alert("서버 연결 실패");
+  }
+}
+
+// ── 로그아웃 ──
+function doLogout() {
+  if (!confirm("로그아웃 하시겠습니까?")) return;
+  localStorage.removeItem("bravo_user");
+  // 로컬 데이터 초기화
+  QS.forEach((_, i) => localStorage.removeItem('a' + i));
+  localStorage.removeItem('bkts');
+  localStorage.removeItem('nid');
+  document.getElementById("auth-wrap").style.display = "flex";
+  document.getElementById("auth-email").value = "";
+  document.getElementById("auth-password").value = "";
+}
+
+// ── 로그인 상태 확인 ──
+function checkLogin() {
+  const user = localStorage.getItem("bravo_user");
+  if (user) {
+    document.getElementById("auth-wrap").style.display = "none";
+    const badge = document.getElementById("user-badge");
+    const emailTxt = document.getElementById("user-email-txt");
+    if (badge) badge.style.display = "inline-flex";
+    if (emailTxt) emailTxt.textContent = user;
+  }
+}
+
+// ── 초기화 ──
+function init() {
+  bkts = ls('bkts') || DEF_BKTS;
+  nid = ls('nid') || 100;
+  buildDots();
+  loadQ(0);
+  renderBook();
+  renderBkt();
+  updateHome();
+  // 유저 배지
+  const user = localStorage.getItem("bravo_user");
+  const badge = document.getElementById("user-badge");
+  const emailTxt = document.getElementById("user-email-txt");
+  if (user && badge) {
+    badge.style.display = "inline-flex";
+    emailTxt.textContent = user;
+  }
+}
+
+function show(t) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + t).classList.add('active');
+  document.getElementById('nav-' + t).classList.add('active');
+  if (t === 'book') renderBook();
+  if (t === 'bucket') renderBkt();
+  if (t === 'home') { updateHome(); renderHomeChips(); }
+}
+
+function buildDots() {
+  document.getElementById('dots').innerHTML = QS.map((_, i) => `<div class="dot" id="d${i}"></div>`).join('');
+}
+
+function loadQ(i) {
+  curQ = i;
+  document.getElementById('q-num').textContent = `질문 ${i + 1} / ${QS.length}`;
+  document.getElementById('q-text').textContent = QS[i];
+  const sv = ls('a' + i) || '';
+  document.getElementById('answer').value = sv;
+  document.getElementById('char-n').textContent = sv.length;
+  document.getElementById('ai-out').textContent = '답변을 쓴 후 아래 버튼을 눌러보세요.';
+  document.getElementById('btn-p').disabled = (i === 0);
+  const bn = document.getElementById('btn-n');
+  bn.innerHTML = i === QS.length - 1
+    ? '완성<i class="fa-solid fa-check"></i>'
+    : '다음<i class="fa-solid fa-chevron-right"></i>';
+  updDots();
+}
+
+function updDots() {
+  QS.forEach((_, i) => {
+    const d = document.getElementById('d' + i);
+    const a = ls('a' + i) || '';
+    d.className = 'dot' + (i === curQ ? ' active' : (a.trim() ? ' done' : ''));
+  });
+}
+
+document.getElementById('answer').addEventListener('input', function() {
+  ls('a' + curQ, this.value);
+  document.getElementById('char-n').textContent = this.value.length;
+  updDots();
+  updateHome();
+  scheduleSave();
+});
+
+function goQ(dir) {
+  ls('a' + curQ, document.getElementById('answer').value);
+  const n = curQ + dir;
+  if (n >= QS.length) { alert('🎉 모든 이야기를 완성하셨습니다!'); show('book'); return; }
+  if (n >= 0) loadQ(n);
+}
+
+// ── AI 문장 다듬기 (서버 경유) ──
+async function callAI() {
+  const text = document.getElementById('answer').value.trim();
+  if (!text) { alert('내용을 먼저 입력해 주세요.'); return; }
+  const btn = document.getElementById('ai-btn');
+  const out = document.getElementById('ai-out');
+  btn.disabled = true;
+  out.innerHTML = '<span class="ldots">AI가 다듬는 중</span>';
+  try {
+    const r = await fetch(API_URL + "/ai-refine", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ text })
+    });
+    const d = await r.json();
+    out.textContent = d.result || '응답 없음.';
+  } catch(e) {
+    out.textContent = '⚠️ AI 연결 실패.';
+  }
+  btn.disabled = false;
+}
+
+// ── 자서전 모아보기 ──
+function renderBook() {
+  document.getElementById('book-entries').innerHTML = QS.map((q, i) => {
+    const a = ls('a' + i) || '';
+    return `<div class="book-entry">
+      <div class="book-q">Q${i+1}. ${q}</div>
+      ${a.trim()
+        ? `<div class="book-a">${a}</div>`
+        : '<div class="book-empty">아직 작성하지 않으셨습니다.</div>'}
+    </div>`;
+  }).join('');
+}
+
+// ── 버킷리스트 ──
+function renderBkt() {
+  const tot = bkts.length;
+  const dn = bkts.filter(b => b.done).length;
+  document.getElementById('bkt-prog').textContent = `${dn}/${tot} 완료`;
+  document.getElementById('bkt-stats').innerHTML = `
+    <div class="stat"><div class="stat-n">${tot}</div><div class="stat-l">전체</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--green)">${dn}</div><div class="stat-l">완료</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--ink3)">${tot - dn}</div><div class="stat-l">진행 중</div></div>`;
+  document.getElementById('bkt-list').innerHTML = bkts.length
+    ? bkts.map(b => `<div class="bkt-item ${b.done ? 'done' : ''}" onclick="togBkt(${b.id})">
+        <div class="bkt-chk">${b.done ? '<i class="fa-solid fa-check"></i>' : ''}</div>
+        <span class="bkt-lbl">${b.text}</span>
+        <button class="del-btn" onclick="event.stopPropagation();delBkt(${b.id})"><i class="fa-solid fa-trash"></i></button>
+      </div>`).join('')
+    : '<p style="text-align:center;color:var(--ink3);font-size:13px;padding:24px">버킷리스트를 추가해 보세요!</p>';
+  renderHomeChips();
+}
+
+function addBkt() {
+  const i = document.getElementById('bkt-inp');
+  const t = i.value.trim();
+  if (!t) return;
+  bkts.push({id: nid++, text: t, done: false});
+  ls('bkts', bkts); ls('nid', nid);
+  i.value = '';
+  renderBkt();
+  scheduleSave();
+}
+
+function togBkt(id) {
+  const b = bkts.find(x => x.id === id);
+  if (b) { b.done = !b.done; ls('bkts', bkts); renderBkt(); scheduleSave(); }
+}
+
+function delBkt(id) {
+  bkts = bkts.filter(x => x.id !== id);
+  ls('bkts', bkts); renderBkt(); scheduleSave();
+}
+
+function renderHomeChips() {
+  const el = document.getElementById('home-chips');
+  if (!el) return;
+  el.innerHTML = bkts.slice(0, 6).map(b =>
+    `<span class="chip ${b.done ? 'done' : ''}">${b.done ? '✓ ' : ''}${b.text}</span>`
+  ).join('');
+}
+
+function updateHome() {
+  let c = 0;
+  QS.forEach((_, i) => { if ((ls('a' + i) || '').trim()) c++; });
+  const p = Math.round(c / QS.length * 100);
+  document.getElementById('h-pbar').style.width = p + '%';
+  document.getElementById('h-ptxt').textContent = `${p}% (${c}/${QS.length})`;
+}
+
+function exportAll() {
+  let o = '=== 나의 인생스토리 — 나의 자서전 ===\n\n';
+  QS.forEach((q, i) => {
+    const a = ls('a' + i) || '(작성 없음)';
+    o += `Q${i+1}. ${q}\n${a}\n\n${'─'.repeat(28)}\n\n`;
+  });
+  o += '\n=== 버킷리스트 ===\n\n';
+  bkts.forEach((b, i) => { o += `${i+1}. [${b.done ? '✓' : '  '}] ${b.text}\n`; });
+  const bl = new Blob([o], {type: 'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(bl);
+  a.download = '나의_인생스토리.txt';
+  a.click();
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+window.onload = function() {
+  checkLogin();
+  const user = localStorage.getItem("bravo_user");
+  if (user) {
+    init();
+  }
+};
+</script>
+</body>
+</html>

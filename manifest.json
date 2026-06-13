@@ -1,0 +1,42 @@
+{
+  "name": "나의 인생스토리",
+  "short_name": "나의 인생스토리",
+  "description": "당신의 소중한 이야기를 기록하고, 자서전과 버킷리스트를 함께 관리하는 인생 기록 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#D4820A",
+  "background_color": "#FDF3E0",
+  "lang": "ko",
+  "categories": ["lifestyle", "productivity"],
+  "icons": [
+    { "src": "icons/icon-48.png",  "sizes": "48x48",   "type": "image/png" },
+    { "src": "icons/icon-72.png",  "sizes": "72x72",   "type": "image/png" },
+    { "src": "icons/icon-96.png",  "sizes": "96x96",   "type": "image/png" },
+    { "src": "icons/icon-144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/home.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "홈 화면"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "자서전 쓰기",
+      "short_name": "쓰기",
+      "url": "/?tab=write",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "버킷리스트",
+      "short_name": "버킷",
+      "url": "/?tab=bucket",
+      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}
